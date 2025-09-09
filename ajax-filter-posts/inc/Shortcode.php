@@ -362,7 +362,7 @@ class Shortcode {
 			$dataPaged = get_query_var( 'paged' ) ? get_query_var( 'paged' ) : 1;
 		}
 
-		$argsArray = isset( $_POST['argsArray'] ) ? $_POST['argsArray'] : array();
+		$argsArray = isset( $_POST['argsArray'] ) ? wp_unslash( $_POST['argsArray'] ) : array();
 		// Merge Json Data
 		$data = array_merge( $this->get_args_from_atts( $argsArray ), $data );
 
@@ -707,13 +707,14 @@ class Shortcode {
 
 	// Init Hook
 	public function init_hook() {
+
 		// Shortcode for frontend
 		if ( isset( $_GET['gm_shortcode_preview'] ) && $_GET['gm_shortcode_preview'] == 1 ) {
+		
 			// Verify the nonce
-  // Verify the nonce
-	if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( $_GET['_wpnonce'], 'gm_shortcode_preview_nonce' ) ) {
-		wp_die( esc_html__( 'Invalid request. Nonce verification failed.', 'gridmaster' ) );
-}
+			if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( $_GET['_wpnonce'], 'gm_shortcode_preview_nonce' ) ) {
+				wp_die( esc_html__( 'Invalid request. Nonce verification failed.', 'ajax-filter-posts' ) );
+			}
 
 			// Disable admin bar
 			add_filter( 'show_admin_bar', '__return_false' );
@@ -723,6 +724,8 @@ class Shortcode {
 			$shortcode = wp_unslash( $shortcode );
 			// Sanitize
 			$shortcode = sanitize_textarea_field( $shortcode );
+
+
 			?>
 			<!-- Blank HTML Template  -->
 			<html>
